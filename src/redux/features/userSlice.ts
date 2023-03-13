@@ -10,6 +10,7 @@ interface UserInfoType {
   made: string[]
   madeOptions: string[]
   solved: string[]
+  studentID?: string
 }
 
 export const userSlice = createSlice({
@@ -24,6 +25,7 @@ export const userSlice = createSlice({
     made: [],
     madeOptions: [],
     solved: [],
+    studentID: undefined,
   } as UserInfoType,
   reducers: {
     login: (state: UserInfoType, action: PayloadAction<UserInfoType>) => {
@@ -37,6 +39,9 @@ export const userSlice = createSlice({
       state.madeOptions = action.payload.madeOptions
       state.solved = action.payload.solved
     },
+    updateStudentID: (state: UserInfoType, action: PayloadAction<string>) => {
+      state.studentID = action.payload
+    },
     logout: (state: UserInfoType) => {
       state.name = ''
       state.email = ''
@@ -47,6 +52,7 @@ export const userSlice = createSlice({
       state.made = []
       state.madeOptions = []
       state.solved = []
+      state.studentID = ''
     },
     enroll: (state: UserInfoType, action: PayloadAction<{ name: string; cid: string }>) => {
       if (state.isLoggedIn) {
@@ -56,5 +62,5 @@ export const userSlice = createSlice({
   },
 })
 
-export const { login, logout, enroll } = userSlice.actions
+export const { login, logout, updateStudentID, enroll } = userSlice.actions
 export const userReducer = userSlice.reducer

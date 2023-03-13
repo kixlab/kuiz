@@ -20,16 +20,6 @@ export const GlobalStyles = css`
   }
   body {
     background-color: #e6eaef;
-    display: flex;
-    justify-content: center;
-    margin: 0px;
-  }
-  .Box {
-    width: 70vw;
-    position: absolute;
-    top: 80px;
-    margin: 0 auto 0 auto;
-    box-sizing: border-box;
   }
   @media (max-width: ${MOBILE_WIDTH_THRESHOLD}px) {
     body {

@@ -67,28 +67,31 @@ export default function Page() {
         optionData,
         similarOptions: similarOptions,
       })
-      push('/' + cid)
+      push('/class/' + cid)
     }
   }, [ansList, cid, isAnswer, keywords, push, option, qid, similarOptions])
 
   return (
     <QuestionBox>
-      {qinfo && (
-        <>
-          <Section>
-            <Label text="Learning Objective" color="blue" size={0} />
-            <SectionText>{qinfo.learning_objective}</SectionText>
-          </Section>
-          <Section>
-            <Label text="Explanation" color="blue" size={0} />
-            <SectionText>{qinfo.explanation}</SectionText>
-          </Section>
-          <DividerLine />
-          <Section>
-            <SectionText>{qinfo.stem_text}</SectionText>
-          </Section>
-        </>
-      )}
+      <div>
+        <Label color="blue" size={0}>
+          Topic
+        </Label>
+        <SectionText>{qinfo?.learning_objective}</SectionText>
+      </div>
+      <div>
+        <Label color="blue" size={0}>
+          Explanation
+        </Label>
+        <SectionText>{qinfo?.explanation}</SectionText>
+      </div>
+      <DividerLine />
+      <div>
+        <Label color="blue" size={0}>
+          Question
+        </Label>
+        <SectionText>Q. {qinfo?.stem_text}</SectionText>
+      </div>
 
       <div>
         {ansList.map((item, i) => (
@@ -120,20 +123,17 @@ const QuestionBox = styled.div`
   border-radius: 8px;
   background-color: white;
   margin: 40px 0 40px 0;
-  padding: 10px 30px 30px 30px;
-`
-
-const Section = styled.div`
+  padding: 30px;
   display: flex;
+  gap: 28px;
   flex-direction: column;
-  margin: 20px 0;
 `
 
 const DividerLine = styled.hr`
+  width: 100%;
   border: 0;
   height: 1px;
   background-color: #dbdbdb;
-  margin: 30px 0 20px 0;
 `
 
 const SectionText = styled.div`

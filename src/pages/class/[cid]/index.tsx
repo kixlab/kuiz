@@ -2,6 +2,7 @@ import { LoadProblemListParams, LoadProblemListResults } from '@api/loadProblemL
 import { FloatingButton } from '@components/basic/button/Floating'
 import { QuizListHeader } from '@components/QuizListHeader'
 import { QuizListItem } from '@components/QuizListItem'
+import { Sheet } from '@components/Sheet'
 import styled from '@emotion/styled'
 import { QStem } from '@server/db/qstem'
 import { request } from '@utils/api'
@@ -45,7 +46,7 @@ export default function Page() {
 
   return (
     <>
-      <BoxShadow>
+      <Sheet padding={0} gap={8}>
         <QuizListHeader />
         {questionList.map((question, i) => (
           <QuizListItem
@@ -57,16 +58,8 @@ export default function Page() {
             onAddOption={onAddOption(question._id)}
           />
         ))}
-      </BoxShadow>
+      </Sheet>
       <FloatingButton onClick={onCreateQuestion}>Create a New Question</FloatingButton>
     </>
   )
 }
-
-const BoxShadow = styled.div`
-  box-shadow: 0px 0px 16px rgba(40, 40, 40, 0.12);
-  border-radius: 8px;
-  overflow: hidden;
-  margin: 40px 12px;
-  margin-top: 40px;
-`

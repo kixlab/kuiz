@@ -5,15 +5,22 @@ import styled from '@emotion/styled'
 import { palette } from '@styles/theme'
 import { request } from '@utils/api'
 import { useRouter } from 'next/router'
-import { useCallback, useState } from 'react'
-import { CreateQStemParams, CreateQStemResults } from '@api/question/createQStem'
+import { useCallback, useEffect, useState } from 'react'
+import { CreateQStemParams, CreateQStemResults } from '@api/createQuestion'
 import { CreateOptionParams, CreateOptionResults } from '@api/createOption'
+import { SelectInput } from '@components/basic/input/Select'
+import { LoadTopicsParams, LoadTopicsResults } from '@api/loadTopics'
+import { Sheet } from '@components/Sheet'
+
+const BLOOMS_TAXONOMY = ['Remember', 'Understand', 'Apply', 'Analyze', 'Evaluate', 'Create']
 
 export default function Page() {
   const { push, query } = useRouter()
   const cid = query.cid as string | undefined
   const [answer, setAnswer] = useState('')
-  const [objective, setObjective] = useState('')
+  const [topics, setTopics] = useState<string[]>([])
+  const [topic, setTopic] = useState(topics[0] ?? '')
+  const [method, setMethod] = useState(BLOOMS_TAXONOMY[0])
   const [explanation, setExplanation] = useState('')
   const [question, setQuestion] = useState('')
 
@@ -26,13 +33,9 @@ export default function Page() {
       alert('Please enter an answer.')
       return
     }
-    if (objective.trim().length === 0) {
-      alert('Please enter a learning objective.')
-      return
-    }
 
     if (cid) {
-      const res = await request<CreateQStemParams, CreateQStemResults>(`question/qstem/create`, {
+      const res = await request<CreateQStemParams, CreateQStemResults>(`createQuestion`, {
         qstemObj: {
           stem_text: question,
           explanation,
@@ -41,11 +44,11 @@ export default function Page() {
           cid,
           options: [],
           optionSets: [],
-          learning_objective: objective,
+          learning_objective: `To ${method} the concept of ${topic}`,
         },
       })
       if (res) {
-        await request<CreateOptionParams, CreateOptionResults>(`question/option/create`, {
+        await request<CreateOptionParams, CreateOptionResults>(`createOption`, {
           optionData: {
             option_text: answer,
             is_answer: true,
@@ -57,40 +60,69 @@ export default function Page() {
           similarOptions: [],
         })
 
-        push('/' + cid + '/question/' + res.data + '/createOption')
+        push('/class/' + cid + '/question/' + res.data + '/create-option')
       }
     }
-  }, [cid, question, explanation, objective, answer, push])
+  }, [question, answer, cid, explanation, method, topic, push])
+
+  const onSelectTopic = useCallback(
+    (i: number) => {
+      setTopic(topics[i])
+    },
+    [topics]
+  )
+
+  const onSelectMethod = useCallback((i: number) => {
+    setMethod(BLOOMS_TAXONOMY[i])
+  }, [])
+
+  useEffect(() => {
+    if (cid) {
+      request<LoadTopicsParams, LoadTopicsResults>(`loadTopics`, { cid }).then(res => {
+        if (res) {
+          setTopics(res.topics)
+        }
+      })
+    }
+  }, [cid])
 
   return (
-    <CreateQBox>
+    <Sheet>
       <div>
-        <Label text="Learning Objective" color="blue" size={0} />
-        <TextEditor placeholder="Objective" value={objective} onChange={setObjective} />
+        <Label color="blue" size={0}>
+          Topic
+        </Label>
+        <TopicContainer>
+          To <SelectInput options={BLOOMS_TAXONOMY} value={method} onSelect={onSelectMethod} />
+          the concept of
+          <SelectInput options={topics} value={topic} onSelect={onSelectTopic} />
+        </TopicContainer>
       </div>
       <div>
-        <Label text="Question Stem" color="blue" size={0} />
-        <TextEditor value={question} onChange={setQuestion} />
+        <Label color="blue" size={0}>
+          Question
+        </Label>
+        <TextEditor placeholder="(e.g., )" value={question} onChange={setQuestion} />
       </div>
       <div>
-        <Label text="Explanation" color="blue" size={0} />
-        <TextEditor value={explanation} onChange={setExplanation} />
+        <Label color="blue" size={0}>
+          Answer
+        </Label>
+        <TextEditor placeholder="Answer of the question" value={answer} onChange={setAnswer} />
       </div>
       <div>
-        <Label text="Answer" color="blue" size={0} />
-        <TextEditor placeholder="Suggest an answer" value={answer} onChange={setAnswer} />
+        <Label color="blue" size={0}>
+          Explanation
+        </Label>
+        <TextEditor placeholder="Explanation of your answer" value={explanation} onChange={setExplanation} />
       </div>
       <FillBtn onClick={submitStem}>Submit</FillBtn>
-    </CreateQBox>
+    </Sheet>
   )
 }
 
-const CreateQBox = styled.div`
-  background-color: ${palette.common.white};
-  padding: 30px;
-  border-radius: 8px;
+const TopicContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 30px;
-  margin: 30px 0 30px 0;
+  align-items: center;
+  gap: 1ch;
 `

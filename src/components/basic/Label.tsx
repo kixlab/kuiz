@@ -3,22 +3,21 @@ import { css } from '@emotion/react'
 import { typography, palette } from '@styles/theme'
 
 interface Props {
-  text: string
-  color: string
-  size: number
+  children: React.ReactNode
+  color?: 'black' | 'blue'
+  size?: number
 }
 
-export const Label = (props: Props) => {
+export const Label = ({ children, color = 'black', size = 0 }: Props) => {
   return (
-    <LabelComponent color={props.color} size={props.size}>
-      {props.text}
+    <LabelComponent color={color} size={size}>
+      {children}
     </LabelComponent>
   )
 }
 
 const LabelComponent = styled.div<{ color: string; size: number }>`
   ${({ color, size }) => css`
-    margin-bottom: 12px;
     ${size === 0
       ? css`
           ${typography.hLabel}

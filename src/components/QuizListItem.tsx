@@ -14,7 +14,7 @@ interface Props {
 
 export const QuizListItem = ({ title, options, date, onAddOption, onSolve }: Props) => {
   return (
-    <QuizList>
+    <Container>
       <QuizText>{title}</QuizText>
       <Item>{options}</Item>
       <Item>{date.toLocaleDateString()}</Item>
@@ -26,24 +26,25 @@ export const QuizListItem = ({ title, options, date, onAddOption, onSolve }: Pro
           Add Option <span>&gt;</span>
         </SmallPrimaryButton>
       </ButtonArea>
-    </QuizList>
+    </Container>
   )
 }
 
-const QuizList = styled.div`
+const Container = styled.div`
+  width: calc(100% - 40px);
+  text-align: center;
   display: grid;
   align-items: center;
   grid-template-columns: auto 100px 100px 100px;
   column-gap: 8px;
   background-color: white;
-  place-items: left;
-  padding: 16px;
+  padding: 4px 20px;
   ${typography.b02};
   text-align: center;
   border-bottom: 1px solid #dbdbdb;
 
   @media (max-width: ${MOBILE_WIDTH_THRESHOLD}px) {
-    grid-template-columns: auto 100px;
+    grid-template-columns: auto 0 0 100px;
   }
 `
 

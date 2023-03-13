@@ -1,7 +1,7 @@
 import { CategoryInput } from './CategoryInput'
 import styled from '@emotion/styled'
 import { FillBtn } from './basic/button/Button'
-import { TextInput } from './basic/InputBox'
+import { TextInput } from './basic/input/Text'
 import { TagBtn } from './basic/button/TagButton'
 import { Label } from './basic/Label'
 import { useCallback } from 'react'
@@ -26,7 +26,9 @@ export const CreateNewOption = (props: Props) => {
     <div>
       <Container>
         <div>
-          <Label text="Create New Option" color="blue" size={0} />
+          <Label color="blue" size={0}>
+            Create New Option
+          </Label>
           <TagBtn onClick={() => props.setIsAnswer(true)} id={props.isAnswer ? 'AnsAct' : 'Ans'}>
             Answer
           </TagBtn>
@@ -48,7 +50,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 10px 0 10px 0;
 `
 
 const Block = styled.div`

@@ -11,15 +11,17 @@ interface Props {
   toggleModal: () => void
 }
 
-export const CheckDialog = (props: Props) => {
-  if (props.modalState) {
+export const CheckDialog = ({ title, message, modalState, btnName, toggleModal }: Props) => {
+  if (modalState) {
     return (
       <Modal>
-        <Label text={props.title} color="black" size={1} />
-        <div>{props.message}</div>
+        <Label color="black" size={1}>
+          {title}
+        </Label>
+        <div>{message}</div>
         <BtnRow>
-          <FillBtn onClick={props.toggleModal}>{props.btnName}</FillBtn>
-          <StrokeBtn onClick={props.toggleModal}>Cancel</StrokeBtn>
+          <FillBtn onClick={toggleModal}>{btnName}</FillBtn>
+          <StrokeBtn onClick={toggleModal}>Cancel</StrokeBtn>
         </BtnRow>
       </Modal>
     )

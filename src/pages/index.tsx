@@ -1,18 +1,18 @@
 import { LoadUserInfoParams, LoadUserInfoResults } from '@api/loadUserInfo'
+import { FillBtn } from '@components/basic/button/Button'
+import { TextInput } from '@components/basic/input/Text'
+import { Sheet } from '@components/Sheet'
 import styled from '@emotion/styled'
+import { enroll, login, updateStudentID } from '@redux/features/userSlice'
+import { RootState } from '@redux/store'
+import { palette, typography } from '@styles/theme'
 import { request } from '@utils/api'
 import { ClientSafeProvider, getProviders, signIn, useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { FillBtn } from '@components/basic/button/Button'
-import { TextInput } from '@components/basic/InputBox'
-import { enroll, login } from '@redux/features/userSlice'
-import { RootState } from '@redux/store'
-import { JoinClassParams, JoinClassResults } from './api/joinClass'
 import { AsyncReturnType } from 'src/types/utils'
-import { typography, palette } from '@styles/theme'
-import { MOBILE_WIDTH_THRESHOLD } from 'src/constants/ui'
+import { JoinClassParams, JoinClassResults } from './api/joinClass'
 
 interface Props {
   providers: AsyncReturnType<typeof getProviders>
@@ -50,10 +50,13 @@ export default function Page({ providers }: Props) {
               solved: user.solved.map(c => c.toString()),
             })
           )
+          if (user.studentID) {
+            dispatch(updateStudentID(user.studentID))
+          }
         }
       })
     }
-  }, [dispatch, session])
+  }, [push, dispatch, session])
 
   const onSubmit = useCallback(async () => {
     const res = await request<JoinClassParams, JoinClassResults>(`joinClass`, {
@@ -82,7 +85,7 @@ export default function Page({ providers }: Props) {
   return (
     <>
       {session ? (
-        <CodeInputBox>
+        <Sheet>
           <Header>Choose a Class or Enroll in a new Class</Header>
           {classes.map(({ cid, name }, i) => (
             <ClassButton key={i} onClick={onClassEnter(cid)}>
@@ -94,7 +97,7 @@ export default function Page({ providers }: Props) {
             <TextInput placeholder="Enter class code" onChange={detectChange} />
             <FillBtn onClick={onSubmit}>Enter</FillBtn>
           </InputSection>
-        </CodeInputBox>
+        </Sheet>
       ) : (
         <>
           <IntroBox>
@@ -141,16 +144,6 @@ export default function Page({ providers }: Props) {
   )
 }
 
-const CodeInputBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 100px 60px 30px 60px;
-  box-sizing: border-box;
-  font-size: 18px;
-`
-
 const ClassButton = styled.button`
   font-family: 'inter-r';
   font-size: 15px;
@@ -169,12 +162,9 @@ const ClassButton = styled.button`
 const IntroBox = styled.div`
   border-radius: 8px;
   background-color: white;
-  padding: 30px;
+  padding: 28px;
   box-sizing: border-box;
-  margin: 24px 0;
-  @media (max-width: ${MOBILE_WIDTH_THRESHOLD}px) {
-    box-sizing: border-box;
-  }
+  margin-bottom: 24px;
   ${typography.b02};
 `
 

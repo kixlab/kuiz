@@ -16,7 +16,9 @@ export const InputDialog = (props: Props) => {
   if (props.modalState) {
     return (
       <Modal>
-        <Label text="Report Error" color="black" size={1} />
+        <Label color="black" size={1}>
+          Report Error
+        </Label>
         <TextAreaInput onChange={e => setInputMsg(e.target.value)} placeholder="Write down the error" />
         <BtnRow>
           <FillBtn onClick={() => props.submit(inputMsg)} disabled={inputMsg == ''}>
