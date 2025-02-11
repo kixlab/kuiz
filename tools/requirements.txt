@@ -32,7 +32,7 @@ threadpoolctl==3.1.0
 tokenizers==0.13.2
 torch==2.2.0
 torchvision==0.14.1
-transformers==4.38.0
+transformers==4.48.0
 tqdm==4.66.3
 typing_extensions==4.4.0
 urllib3==1.26.18
